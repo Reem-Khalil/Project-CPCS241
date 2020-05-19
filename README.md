@@ -10,7 +10,7 @@ To more about this Society, please visit the official Twitter account: https://t
 
 
 The main parts in this project are:
-PART I  : Analysis
+PART I  : ANALYSIS
 PART II : DB DEISGN
 PART III: IMPLEMENTATION (SQL)
 
