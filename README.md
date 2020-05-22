@@ -19,5 +19,5 @@ The main parts in this project are:
 ANALYSIS, DB DEISGN and IMPLEMENTATION.
 
 
-The APPENDIX contain all SQL source codes of this project.
+The SQL-source-codes.txt contains all SQL source codes of this project.
 
