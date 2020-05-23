@@ -1,0 +1,286 @@
+CREATE TABLE EMPLOYEE(
+NationalID NUMBER(10) PRIMARY KEY , 
+Fname VARCHAR2(20) NOT NULL ,
+Mint VARCHAR2(20), 
+Lname VARCHAR2(20) ,
+Salary NUMBER(10),
+Bdate DATE ,
+NOTE VARCHAR2(225),
+DPID NUMBER(10),
+SupervisorID NUMBER(10) );
+alter table EMPLOYEE
+add CONSTRAINT EMPSUPERFK FOREIGN KEY (SupervisorID) REFERENCES EMPLOYEE (NationalID)
+add CONSTRAINT DP_ID FOREIGN KEY (DPID) REFERENCES department (DP_ID);
+
+
+CREATE TABLE PROJECT(
+PJ_ID NUMBER(10) PRIMARY KEY ,
+PJ_name VARCHAR2(20) NOT NULL ,
+Ex_startDate DATE,
+Ex_finishDate DATE,
+state VARCHAR2(20),
+Budget NUMBER(20) ,
+Region VARCHAR2(20),
+City VARCHAR2(20),
+Province VARCHAR2(20));
+
+
+CREATE TABLE WORKS_ON(
+Works_hours NUMBER(10),
+ProjectID NUMBER(10)  ,
+NationalID NUMBER(10) ,
+CONSTRAINT WORKONPK PRIMARY KEY(ProjectID,NationalID)  );
+alter table WORKS_ON
+add CONSTRAINT PROIDFK FOREIGN KEY (ProjectID) REFERENCES PROJECT(PJ_ID) 
+add CONSTRAINT EMPIDFK FOREIGN KEY (NationalID) REFERENCES EMPLOYEE(NationalID);
+
+
+CREATE TABLE Department(
+DP_ID NUMBER(10) PRIMARY KEY ,
+DP_name VARCHAR2(20) UNIQUE ,
+Manger_ID  NUMBER(10) );  
+alter table Department
+add CONSTRAINT MIDFK FOREIGN KEY (Manger_ID) REFERENCES EMPLOYEE(NationalID);
+
+
+CREATE TABLE Funder_company (
+F_ID number(10) PRIMARY KEY,
+F_name varchar2(32) );
+
+
+
+CREATE TABLE representative(
+Rep_ID number(10)   PRIMARY KEY,
+Rep_Name varchar2(50),
+contactNum number(10)  NOT NULL ,
+FunderID number(10) );
+alter table representative
+add CONSTRAINT FCIDFK FOREIGN KEY (FunderID) REFERENCES Funder_company (F_ID) ;
+
+
+CREATE TABLE Funds (
+Project_ID  number(10) ,
+F_ID number(10) ,
+amount number(10),
+Rep_ID number(10),
+CONSTRAINT FOUNDSPK PRIMARY KEY( Project_ID , F_ID ) );
+alter table Funds 
+add CONSTRAINT REPIDFFK FOREIGN KEY (Rep_ID) REFERENCES representative(Rep_ID)
+add CONSTRAINT FCIDFFK  FOREIGN KEY (F_ID) REFERENCES funder_company(f_id)
+add CONSTRAINT PROIDFFK FOREIGN KEY (Project_ID) REFERENCES project (pj_id);
+
+
+
+CREATE TABLE Bank_Acount (
+B_ID number(10)  PRIMARY KEY,
+B_name varchar(32),
+IPAN varchar2(35) UNIQUE );
+
+
+
+CREATE TABLE Executive_company (
+EC_ID  number(10)  PRIMARY KEY,
+EC_name varchar2(32),
+Ex_contactNum number(10) NOT NULL ); 
+
+
+
+CREATE TABLE Project_bankAccount (
+B_ID number(10),
+Pj_ID number(10),
+CONSTRAINT PBAPK PRIMARY KEY( B_ID , Pj_ID ) );
+alter table Project_bankAccount 
+add CONSTRAINT PIDFK  FOREIGN KEY (Pj_ID) REFERENCES project (PJ_ID )
+ADD CONSTRAINT BIDFK  FOREIGN KEY (B_ID) REFERENCES bank_acount(B_ID);
+
+
+
+CREATE TABLE STAGES (
+Project_ID NUMBER(10) ,
+EC_ID  NUMBER (10) ,
+S_id NUMBER (10),
+S_name varchar2(50),
+StartDate date,
+FinishDate date,
+cost number(10) CHECK (cost <=50000000),
+CONSTRAINT STAGEPK  PRIMARY KEY ( Project_ID , EC_ID , S_id ) );
+alter table STAGES 
+add CONSTRAINT ECIDSFK  FOREIGN KEY (EC_ID) REFERENCES  Executive_company  (EC_ID)
+add CONSTRAINT PROIDSFK FOREIGN KEY (Project_ID) REFERENCES  project (pj_id);
+
+
+
+
+
+
+
+
+INSERT INTO EMPLOYEE VALUES (100023421,'abdulrahman', 'saad','almosa',15000 ,to_date('1972-07-31','yyyy-mm-dd') ,'A businessman interested to support charity',001, 109735473);
+INSERT INTO EMPLOYEE VALUES (102345245,'abdullah' ,'yehia','alsaleem',10000, to_date('1983-03-29','yyyy-mm-dd') ,'Specializes in management, asset management',001, 109735473);
+INSERT INTO EMPLOYEE VALUES (100078394,'sultan' ,'mohamed' ,'Aldwish' ,7000 ,to_date('1990-05-31','yyyy-mm-dd') ,'A specialist in management and marketing, interested in charity work',002, 102345245);
+INSERT INTO EMPLOYEE VALUES (102735478,'abdullah', 'saleh' , 'alhussien' ,6500 ,to_date('1976-08-23','yyyy-mm-dd'),'An academic in architecture, interested in charity work', 001,102345245);
+INSERT INTO EMPLOYEE VALUES (107364896,'abdulaziz' , 'abdullah', 'alhamed',6000,to_date('1986-08-18','yyyy-mm-dd'),'An academic specializing in water resources engineering and hydraulics', 003,102345245);
+INSERT INTO EMPLOYEE VALUES (102364538,'abdulellah' , 'abdulaziz', 'almosa' ,6000 ,to_date('1984-05-30','yyyy-mm-dd'),'A businessman interested to support charity',001,102345245);
+INSERT INTO EMPLOYEE VALUES (109735473,'ibrahim','saad','aljadee' ,9000,to_date('1987-05-10','yyyy-mm-dd') , 'An academic specializing in environmental engineering, water treatment and distribution.',001 ,100023421);
+INSERT INTO EMPLOYEE VALUES (102854538,'yousef','saleh','alsageer', 8560 ,to_date('1972-03-31','yyyy-mm-dd'),'An academic and inventor in chemical engineering, and interested in charity work.',003,109735473);
+INSERT INTO EMPLOYEE VALUES (104673920,'ibrahim' ,'suliman','alhaidri' ,8500 ,to_date('1989-07-05','yyyy-mm-dd'),'An academic specializing in management and marketing, and interested in charity  work',001,100023421);
+INSERT INTO EMPLOYEE VALUES (101275378,'sharehk' ,'ibrahim' , 'alsharehk' ,9000 ,to_date('1981-07-09','yyyy-mm-dd'),'a specializes in chemical engineering and  interested in charity  work', 002,100023421);  
+ 
+INSERT INTO Department VALUES (001 ,'Administration', 100023421);
+INSERT INTO Department VALUES (002 ,'executive', 102345245);
+INSERT INTO Department VALUES (003 ,'Financial', 109735473); 
+ 
+
+
+
+CREATE SEQUENCE seq_PJ START WITH 0 INCREMENT BY 1 minvalue 0 ;
+INSERT INTO Project VALUES (seq_PJ.Nextval,'soquya',to_date('2018-07-31','yyyy-mm-dd'),to_date('2019-05-23','yyyy-mm-dd'),'In-progress', 100000000,'Makkah','Jeddah','Jeddah');
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'A thb',to_date('2018-05-01','yyyy-mm-dd'),to_date('2019-09-29','yyyy-mm-dd') , 'In-progress', 800000 ,'aseer','Sabt al-alayah', 'Sabt al-alayah');
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'doqah', to_date('2018-08-13','yyyy-mm-dd') , to_date('2019-01-01','yyyy-mm-dd') ,'finish', 700000, 'makkah' ,'doqah' ,'alqunfothah');
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'Albarza' , to_date('2017-12-31','yyyy-mm-dd'),to_date('2018-10-30','yyyy-mm-dd') ,'finish' , 650000 , 'Makkah' ,'Albarza','helas' );
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'Shaqra', to_date('2018-02-26','yyyy-mm-dd'),to_date('2019-12-16','yyyy-mm-dd'), 'In-progress', 650000, 'Riyadh','Shaqra','Riyadh' );
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'Aljaaeza' , to_date('2018-01-01','yyyy-mm-dd'),to_date('2020-01-01','yyyy-mm-dd'),'In-progress', 1200000,'Makkah', 'Aljaaeza' ,'Addam' );
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'Bashoot' ,to_date('2018-02-20','yyyy-mm-dd') ,to_date('2021-10-15','yyyy-mm-dd'), 'In-progress' ,900000,'aseer', 'bashoot' ,'Sabt al-alayah');
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'umq' , to_date('2018-02-19','yyyy-mm-dd'), to_date('2020-10-03','yyyy-mm-dd') ,'In-progress' ,800000,'tabook',  'umq','umlj' );
+INSERT INTO Project VALUES (seq_PJ.Nextval, 'Elatanh' ,to_date('2018-05-10','yyyy-mm-dd') ,to_date('2026-10-16','yyyy-mm-dd'),'In-progress' ,800000 ,'Makkah' ,'alrahuah' ,'Alleth');
+INSERT INTO Project VALUES (seq_PJ.Nextval,'seha',to_date('2018-01-22','yyyy-mm-dd'),to_date('2024-10-27','yyyy-mm-dd'),'In-progress', 700000,'Riyadh','Riyadh','Riyadh');  
+  
+INSERT INTO Works_ON VALUES (34,1, 100078394);
+INSERT INTO Works_ON VALUES (32,2, 102735478);
+INSERT INTO Works_ON VALUES (30,1, 109735473);
+INSERT INTO Works_ON VALUES (26,2, 104673920);
+INSERT INTO Works_ON VALUES (30,3, 109735473);
+INSERT INTO Works_ON VALUES (10,4, 107364896);
+INSERT INTO Works_ON VALUES (40,6, 107364896);
+INSERT INTO Works_ON VALUES (22,2, 109735473);
+INSERT INTO Works_ON VALUES (22,2, 100023421);
+INSERT INTO Works_ON VALUES (22,5, 100023421);  
+
+CREATE SEQUENCE seq_FC  START WITH 999  INCREMENT BY 1;
+INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Awqaf Al-dehaian');
+INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Ministry of health');
+INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Abdulrahman Almousa');
+INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Al-Eisaa Charity'); INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Awqaf mohamed abdullh'); 
+
+INSERT INTO representative VALUES (121234,'Saeed saleh', 0543212340,1000);
+INSERT INTO representative VALUES (135235,'mohammed ahmed', 0542165951,1000);
+INSERT INTO representative VALUES (121289,'abdullah alshareef', 0543217040,1000);
+INSERT INTO representative VALUES (121235,'Matlq yousef', 0542123456,1001);
+INSERT INTO representative VALUES (121236,'Rashed bakr', 0553212453, 1002);
+INSERT INTO representative VALUES (121263,'ahmed salem', 0553213201, 1002);
+INSERT INTO representative VALUES (121238,'Mohammed saad', 0543215679, 1003); INSERT INTO representative VALUES (121898,'yaser selyman', 0543211239, 1004);
+INSERT INTO representative VALUES (121210,'yheya asead', 0543213219, 1001);
+INSERT INTO representative VALUES (121321,'soltan hamdan', 0543217859, 1004); 
+
+INSERT INTO Funds VALUES( 1,1000, 100000000,121234);
+INSERT INTO Funds VALUES( 2,1002, 800000,121263);
+INSERT INTO Funds VALUES( 3,1000, 700000,135235);
+INSERT INTO Funds VALUES( 4,1003, 650000,121238);
+INSERT INTO Funds VALUES( 5,1001, 650000,121235);
+INSERT INTO Funds VALUES( 6,1001, 1200000,121235);
+INSERT INTO Funds VALUES( 7,1002, 900000,121236);
+INSERT INTO Funds VALUES( 8,1002, 800000,121236);
+INSERT INTO Funds VALUES( 9,1000, 800000,121289);
+INSERT INTO Funds VALUES( 10,1003, 700000,121238); 
+INSERT INTO Bank_Acount VALUES (12983322,'Alahli bank', '3704 0044 0532 0130 00');
+INSERT INTO Bank_Acount VALUES (12983324,'Alrajhi bank', '4567 0076 0274 0430 00');  
+
+INSERT INTO Project_bankAccount VALUES (12983322,1);
+INSERT INTO Project_bankAccount VALUES (12983324,2);
+INSERT INTO Project_bankAccount VALUES (12983324,3);
+INSERT INTO Project_bankAccount VALUES (12983324,4);
+INSERT INTO Project_bankAccount VALUES (12983322,5);
+INSERT INTO Project_bankAccount VALUES (12983322,6);
+INSERT INTO Project_bankAccount VALUES (12983324,7);
+INSERT INTO Project_bankAccount VALUES (12983322,8);
+INSERT INTO Project_bankAccount VALUES (12983322,9);
+INSERT INTO Project_bankAccount VALUES (12983324,10);
+ 
+
+CREATE SEQUENCE ec_seq  START WITH 0  INCREMENT BY 1 minvalue 0;
+INSERT INTO Executive_company VALUES( ec_seq.nextval ,'Saudi Amana Contracting', '0128735444' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'Al-rajhi constructing company', '01266574737' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'SACODE CO', '0555566678' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'MAPA constructing company', '0118743322'); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'AL-wadi for design and planning' , '0598777777' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'Medina united comapny' , '0117654567' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'Alfadel company construction ', '0123456789'  ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'Bena usakan constructing company', '9009007678' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'Al-Dar constructions', '9000070000' ); 
+INSERT INTO Executive_company VALUES( ec_seq.nextval , 'KOOB water solutions', '0113333344' ); 
+
+
+INSERT INTO Stages VALUES(1, 5, 1, 'planning',to_date('2018-07-31','yyyy-mm-dd'),to_date('2018-08-31','yyyy-mm-dd') ,500000); 
+INSERT INTO Stages VALUES(1, 2, 2,'construction', to_date('2018-09-01','yyyy-mm-dd'),null , 50000000); 
+INSERT INTO Stages VALUES(2, 5, 1, 'planning' ,to_date('2018-05-14','yyyy-mm-dd'),to_date('2018-08-28','yyyy-mm-dd') , 10000); 
+INSERT INTO Stages VALUES(2, 2, 2, 'construction' , to_date('2018-08-29','yyyy-mm-dd'),to_date('2019-04-21','yyyy-mm-dd') , 650000);  
+INSERT INTO Stages VALUES(3, 5, 1, 'planning' ,to_date('2018-08-13','yyyy-mm-dd'),to_date('2018-08-28','yyyy-mm-dd') , 10000); 
+INSERT INTO Stages VALUES(3, 8, 2, 'construction' , to_date('2018-09-02','yyyy-mm-dd'),to_date('2018-12-12','yyyy-mm-dd') , 500000); 
+INSERT INTO Stages VALUES(3, 10, 3, 'tests' , to_date('2018-12-29','yyyy-mm-dd'),to_date('2019-01-01','yyyy-mm-dd'), 15000); 
+INSERT INTO Stages VALUES(4, 5, 1, 'planning' ,to_date('2017-12-31','yyyy-mm-dd'),to_date('2018-01-29','yyyy-mm-dd') , 100000); 
+INSERT INTO Stages VALUES(4, 9, 2, 'construction' , to_date('2018-02-02','yyyy-mm-dd'),to_date('2018-10-01','yyyy-mm-dd') , 450000); 
+INSERT INTO Stages VALUES(4, 10, 3, 'tests' , to_date('2018-10-02','yyyy-mm-dd'),to_date('2018-10-17','yyyy-mm-dd'), 10000);
+INSERT INTO Stages VALUES(5, 5, 1, 'planning' ,to_date('2018-02-20','yyyy-mm-dd'),to_date('2018-03-03','yyyy-mm-dd') , 15000); 
+INSERT INTO Stages VALUES(5, 6, 2, 'construction' , to_date('2018-04-21','yyyy-mm-dd'),null , 450000); 
+INSERT INTO Stages VALUES(6, 5, 1, 'planning' ,to_date('2018-01-01','yyyy-mm-dd'),to_date('2018-02-01','yyyy-mm-dd') , 100000); 
+INSERT INTO Stages VALUES(6, 7, 2, 'construction' , to_date('2018-03-01','yyyy-mm-dd'),null , 1000000); 
+INSERT INTO Stages VALUES(7, 5, 1, 'planning' ,to_date('2018-02-20','yyyy-mm-dd'),to_date('2018-03-21','yyyy-mm-dd') , 15000); 
+INSERT INTO Stages VALUES(7, 7, 2, 'construction' , to_date('2018-04-21','yyyy-mm-dd'), null , 750000); 
+INSERT INTO Stages VALUES(8, 5, 1, 'planning' ,to_date('2018-02-19','yyyy-mm-dd'),to_date('2018-02-28','yyyy-mm-dd') , 20000); 
+INSERT INTO Stages VALUES(8, 2, 2, 'construction' , to_date('2018-03-03','yyyy-mm-dd'),null , 790000);  
+INSERT INTO Stages VALUES(9, 5, 1, 'planning' ,to_date('2018-05-10','yyyy-mm-dd'),to_date('2018-05-25','yyyy-mm-dd') , 25000); 
+INSERT INTO Stages VALUES(9, 4, 2, 'construction' , to_date('2019-02-22','yyyy-mm-dd'),null , 500000); 
+INSERT INTO Stages VALUES(10, 5, 1, 'planning' ,to_date('2018-01-22','yyyy-mm-dd'),to_date('2018-02-09','yyyy-mm-dd') , 10000); 
+
+
+
+
+
+select representative.Rep_Name ,representative.contactNum ,Funder_company.F_name,count(*) as "PROJECTSNUM"
+from project, representative , Funds, Funder_company
+where project.PJ_ID=Funds.Project_ID
+  and representative.Rep_ID=Funds.Rep_ID
+  and Funder_company.F_ID =Funds.F_ID
+group by  representative.Rep_Name ,representative.contactNum ,Funder_company.F_name
+having count(*)>1 ;
+
+
+select project.PJ_name,project.Ex_finishDate  as "expected finish date",max(STAGES.FinishDate)  as "actual finish date"
+from project, STAGES
+where project.PJ_ID= STAGES.Project_ID and project.state ='finish'
+group by project.PJ_name ,project.Ex_finishDate ;
+
+
+select project.PJ_name, project.Budget as "expected cost",sum(STAGES.cost) as "actual cost"
+from project,STAGES
+where project.PJ_ID =STAGES.Project_ID
+group by project.PJ_name,project.Budget;
+
+
+Select f_name, sum(amount)  as "TOTAL AMOUNT" 
+From funder_company, funds, project 
+Where project.pj_id=funds.project_id 
+  and funds.f_id = funder_company.f_id 
+  and project.pj_id IN (select pj_id from project Where state='finish')
+Group by f_name ;
+
+
+Select Funder_company.F_ID , Funder_company.F_name
+
+From Funder_company
+
+Where Funder_company.F_ID  not In (select Funds.F_ID 
+
+                                   from Funds,project 
+
+                                   where project.City = 'Makkah' 
+  and project.PJ_ID=Funds.Project_ID);
+
+
+
+select EMPLOYEE.NationalID, EMPLOYEE.Fname ,EMPLOYEE.Lname, sum(NVL(WORKS_ON.Works_hours,0)) as "total of work hours"
+from EMPLOYEE left join WORKS_ON on EMPLOYEE.NationalID = WORKS_ON.NationalID 
+group by EMPLOYEE.NationalID , EMPLOYEE.Fname ,EMPLOYEE.Lname ;
+
+
+
