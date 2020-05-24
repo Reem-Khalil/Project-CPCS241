@@ -1,3 +1,6 @@
+/* ************************ TABLES *********************** */
+
+
 CREATE TABLE EMPLOYEE(
 NationalID NUMBER(10) PRIMARY KEY , 
 Fname VARCHAR2(20) NOT NULL ,
@@ -48,7 +51,6 @@ F_ID number(10) PRIMARY KEY,
 F_name varchar2(32) );
 
 
-
 CREATE TABLE representative(
 Rep_ID number(10)   PRIMARY KEY,
 Rep_Name varchar2(50),
@@ -70,19 +72,16 @@ add CONSTRAINT FCIDFFK  FOREIGN KEY (F_ID) REFERENCES funder_company(f_id)
 add CONSTRAINT PROIDFFK FOREIGN KEY (Project_ID) REFERENCES project (pj_id);
 
 
-
 CREATE TABLE Bank_Acount (
 B_ID number(10)  PRIMARY KEY,
 B_name varchar(32),
 IPAN varchar2(35) UNIQUE );
 
 
-
 CREATE TABLE Executive_company (
 EC_ID  number(10)  PRIMARY KEY,
 EC_name varchar2(32),
 Ex_contactNum number(10) NOT NULL ); 
-
 
 
 CREATE TABLE Project_bankAccount (
@@ -92,7 +91,6 @@ CONSTRAINT PBAPK PRIMARY KEY( B_ID , Pj_ID ) );
 alter table Project_bankAccount 
 add CONSTRAINT PIDFK  FOREIGN KEY (Pj_ID) REFERENCES project (PJ_ID )
 ADD CONSTRAINT BIDFK  FOREIGN KEY (B_ID) REFERENCES bank_acount(B_ID);
-
 
 
 CREATE TABLE STAGES (
@@ -111,8 +109,7 @@ add CONSTRAINT PROIDSFK FOREIGN KEY (Project_ID) REFERENCES  project (pj_id);
 
 
 
-
-
+/* ********************** INSERT STATMENTS ********************* */
 
 
 INSERT INTO EMPLOYEE VALUES (100023421,'abdulrahman', 'saad','almosa',15000 ,to_date('1972-07-31','yyyy-mm-dd') ,'A businessman interested to support charity',001, 109735473);
@@ -126,12 +123,11 @@ INSERT INTO EMPLOYEE VALUES (102854538,'yousef','saleh','alsageer', 8560 ,to_dat
 INSERT INTO EMPLOYEE VALUES (104673920,'ibrahim' ,'suliman','alhaidri' ,8500 ,to_date('1989-07-05','yyyy-mm-dd'),'An academic specializing in management and marketing, and interested in charity  work',001,100023421);
 INSERT INTO EMPLOYEE VALUES (101275378,'sharehk' ,'ibrahim' , 'alsharehk' ,9000 ,to_date('1981-07-09','yyyy-mm-dd'),'a specializes in chemical engineering and  interested in charity  work', 002,100023421);  
  
+ 
 INSERT INTO Department VALUES (001 ,'Administration', 100023421);
 INSERT INTO Department VALUES (002 ,'executive', 102345245);
 INSERT INTO Department VALUES (003 ,'Financial', 109735473); 
  
-
-
 
 CREATE SEQUENCE seq_PJ START WITH 0 INCREMENT BY 1 minvalue 0 ;
 INSERT INTO Project VALUES (seq_PJ.Nextval,'soquya',to_date('2018-07-31','yyyy-mm-dd'),to_date('2019-05-23','yyyy-mm-dd'),'In-progress', 100000000,'Makkah','Jeddah','Jeddah');
@@ -145,6 +141,7 @@ INSERT INTO Project VALUES (seq_PJ.Nextval, 'umq' , to_date('2018-02-19','yyyy-m
 INSERT INTO Project VALUES (seq_PJ.Nextval, 'Elatanh' ,to_date('2018-05-10','yyyy-mm-dd') ,to_date('2026-10-16','yyyy-mm-dd'),'In-progress' ,800000 ,'Makkah' ,'alrahuah' ,'Alleth');
 INSERT INTO Project VALUES (seq_PJ.Nextval,'seha',to_date('2018-01-22','yyyy-mm-dd'),to_date('2024-10-27','yyyy-mm-dd'),'In-progress', 700000,'Riyadh','Riyadh','Riyadh');  
   
+  
 INSERT INTO Works_ON VALUES (34,1, 100078394);
 INSERT INTO Works_ON VALUES (32,2, 102735478);
 INSERT INTO Works_ON VALUES (30,1, 109735473);
@@ -156,11 +153,13 @@ INSERT INTO Works_ON VALUES (22,2, 109735473);
 INSERT INTO Works_ON VALUES (22,2, 100023421);
 INSERT INTO Works_ON VALUES (22,5, 100023421);  
 
+
 CREATE SEQUENCE seq_FC  START WITH 999  INCREMENT BY 1;
 INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Awqaf Al-dehaian');
 INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Ministry of health');
 INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Abdulrahman Almousa');
 INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Al-Eisaa Charity'); INSERT INTO Funder_company VALUES (seq_FC.Nextval ,'Awqaf mohamed abdullh'); 
+
 
 INSERT INTO representative VALUES (121234,'Saeed saleh', 0543212340,1000);
 INSERT INTO representative VALUES (135235,'mohammed ahmed', 0542165951,1000);
@@ -171,6 +170,7 @@ INSERT INTO representative VALUES (121263,'ahmed salem', 0553213201, 1002);
 INSERT INTO representative VALUES (121238,'Mohammed saad', 0543215679, 1003); INSERT INTO representative VALUES (121898,'yaser selyman', 0543211239, 1004);
 INSERT INTO representative VALUES (121210,'yheya asead', 0543213219, 1001);
 INSERT INTO representative VALUES (121321,'soltan hamdan', 0543217859, 1004); 
+
 
 INSERT INTO Funds VALUES( 1,1000, 100000000,121234);
 INSERT INTO Funds VALUES( 2,1002, 800000,121263);
@@ -184,6 +184,7 @@ INSERT INTO Funds VALUES( 9,1000, 800000,121289);
 INSERT INTO Funds VALUES( 10,1003, 700000,121238); 
 INSERT INTO Bank_Acount VALUES (12983322,'Alahli bank', '3704 0044 0532 0130 00');
 INSERT INTO Bank_Acount VALUES (12983324,'Alrajhi bank', '4567 0076 0274 0430 00');  
+
 
 INSERT INTO Project_bankAccount VALUES (12983322,1);
 INSERT INTO Project_bankAccount VALUES (12983324,2);
@@ -235,6 +236,8 @@ INSERT INTO Stages VALUES(10, 5, 1, 'planning' ,to_date('2018-01-22','yyyy-mm-dd
 
 
 
+/* ************************ QUERIES *********************** */
+
 
 select representative.Rep_Name ,representative.contactNum ,Funder_company.F_name,count(*) as "PROJECTSNUM"
 from project, representative , Funds, Funder_company
@@ -266,21 +269,14 @@ Group by f_name ;
 
 
 Select Funder_company.F_ID , Funder_company.F_name
-
 From Funder_company
-
 Where Funder_company.F_ID  not In (select Funds.F_ID 
-
                                    from Funds,project 
-
                                    where project.City = 'Makkah' 
   and project.PJ_ID=Funds.Project_ID);
-
 
 
 select EMPLOYEE.NationalID, EMPLOYEE.Fname ,EMPLOYEE.Lname, sum(NVL(WORKS_ON.Works_hours,0)) as "total of work hours"
 from EMPLOYEE left join WORKS_ON on EMPLOYEE.NationalID = WORKS_ON.NationalID 
 group by EMPLOYEE.NationalID , EMPLOYEE.Fname ,EMPLOYEE.Lname ;
-
-
 
