@@ -1,4 +1,4 @@
-# Project-CPCS241
+# PROJECT-CPCS241
 
 ### Project of Database Course - Faculty of Computing and Information Technology - King Abdulaziz University
 
