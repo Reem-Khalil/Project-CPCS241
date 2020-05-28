@@ -7,8 +7,7 @@
 #### To more about this Society, please visit the official Twitter account: https://twitter.com/ErwaaSA
 
 
-##### The main parts in this project are:
-##### ANALYSIS, DB DEISGN and IMPLEMENTATION.
+##### The main parts in this project are: ANALYSIS, DB DEISGN and IMPLEMENTATION.
 
 ##### The SQL-source-codes.txt contains all SQL source codes of this project.
 
